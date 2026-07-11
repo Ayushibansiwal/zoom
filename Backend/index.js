@@ -38,7 +38,7 @@ const sessionOptions = {
   store: MongoStore.create({
     mongoUrl: process.env.MONGODB_URL,
   }),
-  secret: process.env.SESSION_SECRET || "IamAlazyCAT!", // Good practice to use an env variable
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
   cookie: {
