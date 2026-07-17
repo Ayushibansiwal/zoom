@@ -10,11 +10,13 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "connect-flash": "^0.1.1",
     "connect-mongo": "^6.0.0",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "express-session": "^1.19.0",
+    "flash": "^1.1.0",
     "http-status": "^2.1.0",
     "mongoose": "^9.7.4",
     "nodemon": "^3.1.14",

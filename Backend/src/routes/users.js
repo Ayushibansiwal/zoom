@@ -1,6 +1,6 @@
 import { Router } from "express";
-
-import { signup , login} from "../controllers/userControllers.js";
+import passport from "passport";
+import { signup , login, getCurrentUser} from "../controllers/userControllers.js";
 
 const router = Router();
 
@@ -10,13 +10,19 @@ router
 
 router
 .route("/login")
-.post(login);
-
+.post(
+    passport.authenticate("local"),
+    login
+);
 router
 .route("/add_to_activity");
 
 router
 .route("/get_all_activity");
+
+router
+.route("/current")
+.get(getCurrentUser)
 
 
 export default router;

@@ -2,45 +2,37 @@ import User from "../models/userModel.js";
 import httpStatus from "http-status";
 import passport from "passport";
 
-export const signup = async (req, res) => {
-  const { username, email, password } = req.body;
-
+export const signup = async (req, res, next) => {
   try {
-    const existingUser = await User.findOne({ username });
+    let { username, email, password } = req.body;
 
-    if (existingUser) {
-      return res.status(httpStatus.CONFLICT).json({
-        message: "User already exists.",
+    const newUser = new User({ email, username });
+    const registerUser = await User.register(newUser, password);
+
+    req.login(registerUser, (err) => {
+      if (err) {
+        return next(err);
+      }
+
+      return res.status(httpStatus.CREATED).json({
+        message: "User registered successfully",
+        user: registerUser,
       });
-    }
-
-    const newUser = new User({
-      username,
-      email,
     });
-
-    await User.register(newUser, password);
-
-    return res.status(httpStatus.CREATED).json({
-      message: "User registered successfully.",
-    });
-    
   } catch (error) {
-    return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
-      message: error.message,
-    });
+    next(error);
   }
 };
 
-
-export const login = (req, res, next) => {
-  passport.authenticate("local", (err, user) => {
+export const login = async (req, res, next) => {
+  passport.authenticate("local", (err, user, info) => {
     if (err) {
       return next(err);
     }
 
     if (!user) {
       return res.status(httpStatus.UNAUTHORIZED).json({
+        success: false,
         message: "Invalid username or password",
       });
     }
@@ -51,10 +43,38 @@ export const login = (req, res, next) => {
       }
 
       return res.status(httpStatus.OK).json({
-        message: "Login Successful",
+        success: true,
+        message: "Login successful",
         user,
       });
     });
-
   })(req, res, next);
+};
+
+export const logout = async (req, res, next) => {
+  req.logout((err) => {
+    if (err) {
+      return next(err);
+    }
+    return res.status(httpStatus.OK).json({
+      message: "Logout successful",
+    });
+  });
+};
+
+
+export const getCurrentUser = (req, res) => {
+
+    if (!req.user) {
+        return res.status(httpStatus.UNAUTHORIZED).json({
+            success: false,
+            message: "Not authenticated",
+        });
+    }
+
+    return res.status(httpStatus.OK).json({
+        success: true,
+        user: req.user,
+    });
+
 };

@@ -11,6 +11,7 @@ import passport from "passport";
 import LocalStrategy from "passport-local";
 import mongoose from "mongoose"; 
 import { createServer } from "node:http";
+import httpStatus from "http-status";
 
 // 3. Custom Modules & Internal Imports
 import { connectToSocket } from "./src/controllers/socketManager.js";
@@ -42,13 +43,18 @@ const sessionOptions = {
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: process.env.NODE_ENV === "production", // secure cookies in production
+    secure: process.env.NODE_ENV === "production",
     maxAge: 1000 * 60 * 60 * 24 // 24 hours
   }
 };
 
 // 7. Express Global Middleware
-app.use(cors());
+app.use(
+    cors({
+        origin: "http://localhost:5173",
+        credentials: true,
+    })
+);
 app.use(express.json({ limit: "40kb" }));
 app.use(express.urlencoded({ limit: "40kb", extended: true }));
 app.use(session(sessionOptions));
@@ -61,9 +67,18 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 // 9. API Routes
-app.use("/auth", userRoutes);
+app.use("/users", userRoutes);
 
-// 10. Start Server
+// 10. error 
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(err.status || httpStatus.INTERNAL_SERVER_ERROR).json({
+    success: false,
+    message: err.message || "Something went wrong",
+  });
+});
+
+// 11. Start Server
 server.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });

@@ -1,0 +1,265 @@
+/* Zero-Scroll HUD Blueprint Layout Canvas */
+.hud-viewport {
+  height: 100vh;
+  width: 100vw;
+  background-color: #04070a; /* Obsidian Deep Space */
+  color: #697c8c; /* Mechanical Blue-Gray */
+  position: relative;
+  overflow: hidden; /* Strict layout scroll block */
+  font-family: 'Courier New', Courier, monospace;
+  box-sizing: border-box;
+}
+
+.hud-viewport * {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Axis Crosshair Graphics */
+.hud-crosshair {
+  position: absolute;
+  background-color: rgba(173, 255, 47, 0.08);
+  pointer-events: none;
+  z-index: 1;
+}
+.hud-crosshair.horizontal-axis {
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+}
+.hud-crosshair.vertical-axis {
+  left: 50%;
+  top: 0;
+  width: 1px;
+  height: 100%;
+}
+
+/* Circular Radar Array Elements */
+.radar-circle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 1px solid rgba(173, 255, 47, 0.04);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+}
+.circle-outer { width: 700px; height: 700px; border-style: dashed; }
+.circle-mid { width: 450px; height: 450px; }
+.circle-inner { width: 200px; height: 200px; border-style: dotted; }
+
+/* Glowing Radar Sweep Effect */
+.radar-sweep {
+  width: 100%;
+  height: 100%;
+  background: conic-gradient(from 0deg, transparent 50%, rgba(173, 255, 47, 0.06) 100%);
+  border-radius: 50%;
+  animation: sweepRotate 8s linear infinite;
+}
+
+/* Floating Technical Diagnostics Metrics */
+.hud-metric {
+  position: absolute;
+  font-size: 0.65rem;
+  color: rgba(173, 255, 47, 0.4);
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  z-index: 5;
+}
+.metric-tl { top: 1.5rem; left: 2rem; }
+.metric-tr { top: 1.5rem; right: 2rem; }
+.metric-bl { bottom: 1.5rem; left: 2rem; }
+.metric-br { bottom: 1.5rem; right: 2rem; }
+
+/* Structural Content Assembly */
+.hud-interface-wrapper {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  display: grid;
+  grid-template-rows: 100px 1fr 80px; /* Locked alignment map */
+  padding: 0 2rem;
+  z-index: 10;
+}
+
+/* TOP BLOCK: Headings */
+.hud-header-block {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.35rem;
+  border-bottom: 1px solid rgba(105, 124, 140, 0.15);
+}
+.hud-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+}
+.hud-brand-icon {
+  width: 0.9rem;
+  height: 0.9rem;
+  color: #adff2f;
+}
+.hud-main-heading {
+  font-size: 1.15rem;
+  font-weight: bold;
+  color: #ffffff;
+  letter-spacing: 0.05em;
+}
+.hud-glow-green {
+  color: #adff2f;
+  text-shadow: 0 0 6px rgba(173, 255, 47, 0.3);
+}
+
+/* CENTER INTERFACE: Quadrant Panel Framework */
+.hud-center-console {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+.hud-quadrant-form {
+  display: grid;
+  grid-template-columns: repeat(2, 260px);
+  grid-template-rows: repeat(2, 140px);
+  gap: 1px; /* Creates hard geometric spacing line */
+  background-color: rgba(105, 124, 140, 0.2); /* Split lines color */
+  border: 1px solid rgba(105, 124, 140, 0.3);
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+}
+
+/* Individual Quadrant Modules */
+.hud-quad-box {
+  background-color: #060a0f; /* Obsidian slate block background */
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.quad-label {
+  font-size: 0.65rem;
+  font-weight: bold;
+  color: #adff2f;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.05em;
+}
+.quad-input-wrap {
+  position: relative;
+}
+.quad-icon {
+  position: absolute;
+  left: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0.9rem;
+  height: 0.9rem;
+  color: rgba(105, 124, 140, 0.6);
+}
+.quad-field {
+  width: 100%;
+  background-color: #030508;
+  border: 1px solid rgba(105, 124, 140, 0.25);
+  padding: 0.6rem 0.6rem 0.6rem 2rem;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 0.8rem;
+  border-radius: 0px;
+  transition: all 0.15s ease;
+}
+.quad-field::placeholder {
+  color: #313d47;
+}
+.quad-field:focus {
+  outline: none;
+  border-color: #adff2f;
+  background-color: #010203;
+}
+
+/* Special Case Quadrant 4: Execution Button */
+.q-four {
+  padding: 0;
+  justify-content: stretch;
+  align-items: stretch;
+}
+.quad-submit-btn {
+  width: 100%;
+  height: 100%;
+  background-color: #adff2f;
+  color: #04070a;
+  border: none;
+  font-family: inherit;
+  font-weight: bold;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.quad-submit-btn:hover {
+  background-color: #04070a;
+  color: #adff2f;
+}
+.quad-arrow-icon {
+  width: 0.95rem;
+  height: 0.95rem;
+  transition: transform 0.2s ease;
+}
+.quad-submit-btn:hover .quad-arrow-icon {
+  transform: translateX(3px);
+}
+
+/* BOTTOM BLOCK: Footers */
+.hud-footer-block {
+  border-top: 1px solid rgba(105, 124, 140, 0.15);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.hud-status-log {
+  font-size: 0.7rem;
+  color: rgba(105, 124, 140, 0.5);
+}
+.hud-bypass-link {
+  font-size: 0.75rem;
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: bold;
+  border-bottom: 1px dashed #adff2f;
+  padding-bottom: 2px;
+}
+.hud-bypass-link:hover {
+  color: #adff2f;
+}
+
+/* Rotation Automation Core */
+@keyframes sweepRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive adjustment for extra compact displays */
+@media (max-width: 580px) {
+  .hud-quadrant-form {
+    grid-template-columns: 280px;
+    grid-template-rows: repeat(4, auto);
+  }
+  .hud-quad-box {
+    padding: 1rem;
+  }
+}
+
+.error {
+  color: #ff5d5d;
+  font-size: 0.8rem;
+  margin-top: 6px;
+  margin-left: 8px;
+}
