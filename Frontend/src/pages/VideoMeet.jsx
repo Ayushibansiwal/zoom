@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { io } from "socket.io-client";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import "../styles/videoComponent.css";
@@ -25,7 +26,7 @@ function VideoMeet() {
     let [videoAvailable, setVideoAvailable] = useState(true);
     let [audioAvailable,setAudioAvailable] = useState(true);
 
-    let [video,setVideo] = useState();
+    let [video,setVideo] = useState([]);
     let [audio,setAudio] = useState();
 
     let [screen, setScreen] = useState();
@@ -138,14 +139,51 @@ function VideoMeet() {
             socketRef.current.on("user-joined",(id,clients)=>{
                 clients.forEach((socketListId)=>{
                     connections[socketListId] = new RTCPeerConnection(peerConfigConnections);
+
+                    
                 })
             })
         })
     }
 
+    let addMessage = ()=>{}
+
     let connectToSocketServer = ()=>{
         socketRef.current = io.connect(server_url, {secure:false})
         socketRef.current.on("signal",gotMessageFromServer);
+        socketRef.current.on("connect",()=>{
+            socketRef.current.emit("join-call", window.location.href);
+            socketIdRef.current = socketRef.current.id ;
+            socketRef.current.on("chat-message",addMessage);
+            socketRef.current.on("user-left",(id)=>{
+                setVideo((videos)=> 
+                    videos.filter((video)=> 
+                        video.socketId !== id
+                ))
+            });
+            socketRef.current.on("user-joined",(id,clients)=>{
+                clients.forEach((socketListId)=>{
+                    connections[socketListId] = new RTCPeerConnection(peerConfigConnections);
+
+                    connections[socketListId.oniceandidate] = (event)=>{
+                        if(event.condidate !== null){
+                            socketRef.current.emit("signal", socketListId, JSON.stringify({"ice": event.candidate}));
+                        }
+                    }
+
+                    connections[socketListId].onaddstream = (event)=>{
+                        let videoExits = videoRef.current.find(video => video.socketId === socketListId);
+                        if(videoExits){
+                            setVideo(videos=>{
+                                const updateVideos = videos.map(video =>{
+                                    
+                                })
+                            })
+                        }
+                    }
+                });
+            });
+        });
     };
     
     let getMedia = ()=>{
